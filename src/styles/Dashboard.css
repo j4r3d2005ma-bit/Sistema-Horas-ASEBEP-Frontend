@@ -1,0 +1,587 @@
+/* ESTRUCTURA PRINCIPAL */
+.dashboard-layout {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 230px minmax(0, 1fr);
+  color: #10283e;
+  background: #f6f8fb;
+}
+
+.dashboard-sidebar {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  position: sticky;
+  top: 0;
+  padding: 26px 18px 22px;
+  border-right: 1px solid #dbe2e8;
+  background: #ffffff;
+}
+
+.sidebar-brand {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 0 8px 26px;
+}
+
+.sidebar-brand__icon {
+  width: 38px;
+  height: 38px;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  color: #ffffff;
+  border-radius: 8px;
+  background: #002b4f;
+}
+
+.sidebar-brand__icon svg {
+  width: 22px;
+}
+
+.sidebar-brand div:last-child {
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar-brand strong {
+  color: #002b4f;
+  font-size: 1rem;
+}
+
+.sidebar-brand span {
+  margin-top: 2px;
+  color: #778593;
+  font-size: 0.62rem;
+}
+
+.sidebar-navigation {
+  display: grid;
+  gap: 6px;
+}
+
+.sidebar-link,
+.sidebar-logout {
+  min-height: 42px;
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 0 12px;
+  color: #526575;
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
+  font: inherit;
+  font-size: 0.82rem;
+  text-align: left;
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    color 160ms ease,
+    background 160ms ease,
+    transform 160ms ease;
+}
+
+.sidebar-link svg,
+.sidebar-logout svg {
+  width: 18px;
+  height: 18px;
+}
+
+.sidebar-link:hover,
+.sidebar-logout:hover {
+  color: #002b4f;
+  background: #edf5fb;
+  transform: translateX(2px);
+}
+
+.sidebar-link--active {
+  color: #002b4f;
+  background: #dcecf8;
+  font-weight: 700;
+}
+
+.sidebar-logout {
+  margin-top: auto;
+}
+
+/* CONTENIDO */
+
+.dashboard-area {
+  min-width: 0;
+}
+
+.dashboard-topbar {
+  height: 58px;
+  display: flex;
+  align-items: center;
+  padding: 0 30px;
+  border-bottom: 1px solid #dbe2e8;
+  background: rgb(255 255 255 / 88%);
+  backdrop-filter: blur(12px);
+}
+
+.topbar-brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #002b4f;
+  font-size: 0.8rem;
+}
+
+.topbar-brand svg {
+  display: none;
+  width: 20px;
+}
+
+.dashboard-main {
+  width: min(100%, 1120px);
+  margin: 0 auto;
+  padding: 40px 38px 60px;
+}
+
+.dashboard-welcome {
+  margin-bottom: 28px;
+  animation: dashboard-entry 550ms ease-out both;
+}
+
+.dashboard-eyebrow {
+  margin: 0 0 7px;
+  color: #4b91c4;
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+.dashboard-welcome h1 {
+  margin: 0;
+  color: #10283e;
+  font-size: clamp(1.7rem, 3vw, 2.25rem);
+  letter-spacing: -0.045em;
+}
+
+.dashboard-welcome h1 span {
+  color: #002b4f;
+}
+
+.dashboard-welcome > p:last-child {
+  max-width: 650px;
+  margin: 9px 0 0;
+  color: #6c7a88;
+  font-size: 0.86rem;
+  line-height: 1.6;
+}
+
+/* PROGRESO DE HORAS */
+
+.hours-panel {
+  position: relative;
+  overflow: hidden;
+  padding: 26px;
+  border: 1px solid #dbe2e8;
+  border-radius: 12px;
+  background: #ffffff;
+  box-shadow: 0 10px 32px rgb(10 39 64 / 6%);
+  animation: dashboard-entry 600ms 80ms ease-out both;
+}
+
+.hours-watermark {
+  width: 170px;
+  height: 170px;
+  position: absolute;
+  top: -30px;
+  right: 20px;
+  color: #002b4f;
+  opacity: 0.035;
+  transform: rotate(-7deg);
+}
+
+.hours-panel__heading {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  position: relative;
+  z-index: 1;
+}
+
+.hours-panel h2 {
+  margin: 0;
+  font-size: 0.84rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.hours-panel__heading p {
+  margin: 5px 0 0;
+  color: #7a8793;
+  font-size: 0.7rem;
+}
+
+.status-badge {
+  align-self: flex-start;
+  padding: 6px 11px;
+  color: #ffffff;
+  border-radius: 999px;
+  background: #0b5688;
+  font-size: 0.65rem;
+  font-weight: 700;
+}
+
+.hours-number {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  margin-top: 20px;
+}
+
+.hours-number strong {
+  color: #002b4f;
+  font-size: 2.5rem;
+  line-height: 1;
+  letter-spacing: -0.06em;
+}
+
+.hours-number span {
+  color: #526575;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.progress-track {
+  height: 10px;
+  overflow: hidden;
+  margin-top: 14px;
+  border-radius: 999px;
+  background: #e4e9ee;
+}
+
+.progress-value {
+  height: 100%;
+  display: block;
+  border-radius: inherit;
+  background:
+    linear-gradient(90deg, #002b4f, #0b5688);
+  animation: llenar-progreso 1s
+    cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.hours-panel__footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 18px;
+  margin-top: 13px;
+  color: #647383;
+  font-size: 0.7rem;
+}
+
+.hours-panel__footer span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.hours-panel__footer svg {
+  width: 15px;
+}
+
+/* APORTACIONES Y MULTAS */
+
+.dashboard-summary {
+  display: grid;
+  gap: 16px;
+  margin-top: 20px;
+}
+
+.summary-card {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 18px;
+  padding: 20px 22px;
+  border: 1px solid #dbe2e8;
+  border-radius: 10px;
+  background: #ffffff;
+  animation: dashboard-entry 620ms 150ms ease-out both;
+  transition:
+    border-color 180ms ease,
+    box-shadow 180ms ease,
+    transform 180ms ease;
+}
+
+.summary-card:hover {
+  border-color: #bfcbd5;
+  box-shadow: 0 12px 26px rgb(10 39 64 / 7%);
+  transform: translateY(-2px);
+}
+
+.summary-card__icon {
+  width: 43px;
+  height: 43px;
+  display: grid;
+  place-items: center;
+  border-radius: 9px;
+}
+
+.summary-card__icon svg {
+  width: 21px;
+}
+
+.summary-card__icon--blue {
+  color: #0b5688;
+  background: #e1eff9;
+}
+
+.summary-card__icon--red {
+  color: #a94343;
+  background: #fae5e5;
+}
+
+.summary-card__content {
+  min-width: 0;
+}
+
+.summary-card__label {
+  color: #7a8793;
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.summary-card h2 {
+  margin: 4px 0 0;
+  color: #10283e;
+  font-size: 1rem;
+}
+
+.positive-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 8px;
+  color: #278153;
+  font-size: 0.72rem;
+}
+
+.positive-status > span {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #2dbb72;
+  box-shadow: 0 0 0 3px rgb(45 187 114 / 12%);
+}
+
+.summary-card__details {
+  display: flex;
+  gap: 20px;
+  margin-top: 11px;
+  color: #778593;
+  font-size: 0.68rem;
+}
+
+.summary-card__details span {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.summary-card__details svg {
+  width: 14px;
+}
+
+.summary-card__description {
+  margin: 8px 0 0;
+  color: #778593;
+  font-size: 0.72rem;
+}
+
+.summary-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 8px;
+  color: #0b5688;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  font-size: 0.72rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.summary-action:hover {
+  background: #edf5fb;
+}
+
+.summary-action svg {
+  width: 15px;
+}
+
+/* Oculta la navegación móvil en computadoras. */
+.mobile-navigation {
+  display: none;
+}
+
+/* ANIMACIONES */
+
+@keyframes dashboard-entry {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes llenar-progreso {
+  from {
+    width: 0;
+  }
+}
+
+/* DISEÑO PARA CELULARES */
+
+@media (max-width: 760px) {
+  .dashboard-layout {
+    display: block;
+  }
+
+  .dashboard-sidebar {
+    display: none;
+  }
+
+  .dashboard-topbar {
+    height: 54px;
+    padding: 0 18px;
+  }
+
+  .topbar-brand svg {
+    display: block;
+  }
+
+  .dashboard-main {
+    padding: 24px 16px 92px;
+  }
+
+  .dashboard-welcome {
+    margin-bottom: 20px;
+  }
+
+  .dashboard-eyebrow {
+    display: none;
+  }
+
+  .dashboard-welcome h1 {
+    font-size: 1.45rem;
+  }
+
+  .dashboard-welcome > p:last-child {
+    font-size: 0.76rem;
+  }
+
+  .hours-panel {
+    padding: 20px 17px;
+  }
+
+  .hours-watermark {
+    width: 115px;
+    height: 115px;
+    right: -10px;
+  }
+
+  .hours-number strong {
+    font-size: 2.2rem;
+  }
+
+  .hours-panel__footer {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 7px;
+  }
+
+  /*
+   - En móvil las aportaciones y multas aparecen
+   - como dos tarjetas compactas.
+   */
+  .dashboard-summary {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .summary-card {
+    display: block;
+    min-width: 0;
+    padding: 16px;
+  }
+
+  .summary-card__content {
+    margin-top: 13px;
+  }
+
+  .summary-card__details {
+    display: block;
+  }
+
+  .summary-card__details span {
+    margin-top: 6px;
+  }
+
+  .summary-action,
+  .summary-card__description {
+    margin-top: 10px;
+  }
+
+  .summary-action {
+    padding-left: 0;
+  }
+
+  .mobile-navigation {
+    height: 66px;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    position: fixed;
+    z-index: 20;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    border-top: 1px solid #dbe2e8;
+    background: rgb(255 255 255 / 94%);
+    backdrop-filter: blur(12px);
+  }
+
+  .mobile-navigation__item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 4px;
+    color: #778593;
+    border: 0;
+    background: transparent;
+    font: inherit;
+    font-size: 0.62rem;
+    text-decoration: none;
+  }
+
+  .mobile-navigation__item svg {
+    width: 19px;
+  }
+
+  .mobile-navigation__item--active {
+    color: #002b4f;
+    font-weight: 700;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dashboard-welcome,
+  .hours-panel,
+  .summary-card,
+  .progress-value {
+    animation: none;
+  }
+}

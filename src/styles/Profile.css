@@ -1,0 +1,414 @@
+.profile-page {
+  width: min(100%, 1120px);
+  margin: 0 auto;
+  padding: 36px 38px 50px;
+}
+
+.profile-heading {
+  margin-bottom: 22px;
+  animation: profile-entry 500ms ease-out both;
+}
+
+.profile-heading p {
+  margin: 0 0 5px;
+  color: #4b91c4;
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.profile-heading h1 {
+  margin: 0;
+  color: #10283e;
+  font-size: 1.8rem;
+  letter-spacing: -0.04em;
+}
+
+/* Tarjeta superior con la identidad del estudiante. */
+.profile-identity {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 17px;
+  padding: 22px;
+  border: 1px solid #dbe2e8;
+  border-radius: 11px;
+  background: #ffffff;
+  box-shadow: 0 10px 28px rgb(10 39 64 / 6%);
+  animation: profile-entry 550ms 60ms ease-out both;
+}
+
+.profile-avatar {
+  width: 58px;
+  height: 58px;
+  display: grid;
+  place-items: center;
+  color: #0b5688;
+  border-radius: 50%;
+  background: #e2f0fa;
+}
+
+.profile-avatar svg {
+  width: 28px;
+  height: 28px;
+}
+
+.profile-name {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 9px;
+}
+
+.profile-name h2 {
+  margin: 0;
+  color: #10283e;
+  font-size: 1.35rem;
+  letter-spacing: -0.035em;
+}
+
+.profile-name span {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  color: #0b5688;
+  border-radius: 999px;
+  background: #e1eff9;
+  font-size: 0.58rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.profile-name span svg {
+  width: 12px;
+  height: 12px;
+}
+
+.profile-identity__information > p {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 7px 0 0;
+  color: #748290;
+  font-size: 0.72rem;
+}
+
+.profile-identity__information > p svg {
+  width: 15px;
+}
+
+.profile-actions {
+  display: flex;
+  gap: 9px;
+}
+
+.profile-button {
+  min-height: 39px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 0 13px;
+  border-radius: 6px;
+  font: inherit;
+  font-size: 0.7rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition:
+    transform 160ms ease,
+    background 160ms ease,
+    box-shadow 160ms ease;
+}
+
+.profile-button svg {
+  width: 15px;
+}
+
+.profile-button--secondary {
+  color: #314c61;
+  border: 1px solid #cdd6de;
+  background: #ffffff;
+}
+
+.profile-button--primary {
+  color: #ffffff;
+  border: 1px solid #002b4f;
+  background: #002b4f;
+}
+
+.profile-button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 7px 15px rgb(0 43 79 / 12%);
+}
+
+.profile-button--secondary:hover {
+  background: #f3f7fa;
+}
+
+.profile-button--primary:hover {
+  background: #0b406a;
+}
+
+/* Dos columnas para la información. */
+.profile-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+  gap: 18px;
+  margin-top: 18px;
+}
+
+.profile-card {
+  overflow: hidden;
+  border: 1px solid #dbe2e8;
+  border-radius: 10px;
+  background: #ffffff;
+  animation: profile-entry 600ms 120ms ease-out both;
+  transition:
+    transform 180ms ease,
+    box-shadow 180ms ease;
+}
+
+.profile-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 27px rgb(10 39 64 / 7%);
+}
+
+.profile-card__header {
+  min-height: 48px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 17px;
+  border-bottom: 1px solid #e0e6eb;
+  background: #fbfcfd;
+}
+
+.profile-card__header svg {
+  width: 17px;
+  color: #0b5688;
+}
+
+.profile-card__header h2 {
+  margin: 0;
+  font-size: 0.78rem;
+}
+
+.profile-details {
+  display: grid;
+  gap: 18px;
+  margin: 0;
+  padding: 19px 17px 22px;
+}
+
+.profile-details--academic {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.profile-details div {
+  min-width: 0;
+}
+
+.profile-details dt {
+  margin-bottom: 5px;
+  color: #85919c;
+  font-size: 0.58rem;
+  font-weight: 800;
+  letter-spacing: 0.065em;
+  text-transform: uppercase;
+}
+
+.profile-details dd {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+  overflow-wrap: anywhere;
+  color: #233c50;
+  font-size: 0.74rem;
+  line-height: 1.45;
+}
+
+.profile-details dd svg {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+  color: #6f7f8d;
+}
+
+/* Aviso azul del estado de la beca. */
+.scholarship-status {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: 15px;
+  position: relative;
+  overflow: hidden;
+  margin-top: 18px;
+  padding: 22px;
+  color: #ffffff;
+  border-radius: 10px;
+  background:
+    linear-gradient(125deg, #00345c, #07588c);
+  animation: profile-entry 650ms 180ms ease-out both;
+}
+
+.scholarship-status__icon {
+  width: 42px;
+  height: 42px;
+  display: grid;
+  place-items: center;
+  border-radius: 9px;
+  background: rgb(255 255 255 / 12%);
+}
+
+.scholarship-status__icon svg {
+  width: 22px;
+}
+
+.scholarship-status h2 {
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+.scholarship-status p {
+  max-width: 600px;
+  margin: 6px 0 0;
+  color: rgb(255 255 255 / 72%);
+  font-size: 0.7rem;
+  line-height: 1.55;
+}
+
+.scholarship-status__watermark {
+  width: 120px;
+  height: 120px;
+  position: absolute;
+  right: -20px;
+  bottom: -38px;
+  opacity: 0.07;
+}
+
+.profile-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  margin-top: 28px;
+  padding-top: 20px;
+  color: #84909b;
+  border-top: 1px solid #dde3e8;
+  font-size: 0.62rem;
+}
+
+.profile-footer p {
+  margin: 0;
+}
+
+.profile-footer nav {
+  display: flex;
+  gap: 14px;
+}
+
+.profile-footer a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.profile-footer a:hover {
+  color: #002b4f;
+}
+
+@keyframes profile-entry {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Vista de celular basada en el mockup de Figma. */
+@media (max-width: 760px) {
+  .profile-page {
+    padding: 23px 16px 92px;
+  }
+
+  .profile-heading {
+    margin-bottom: 17px;
+  }
+
+  .profile-heading p {
+    display: none;
+  }
+
+  .profile-heading h1 {
+    font-size: 1.35rem;
+  }
+
+  .profile-identity {
+    grid-template-columns: auto minmax(0, 1fr);
+    padding: 17px;
+  }
+
+  .profile-avatar {
+    width: 48px;
+    height: 48px;
+  }
+
+  .profile-name {
+    display: block;
+  }
+
+  .profile-name h2 {
+    font-size: 1.08rem;
+  }
+
+  .profile-name span {
+    margin-top: 5px;
+  }
+
+  .profile-actions {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .profile-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .profile-details--academic {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .scholarship-status {
+    align-items: start;
+    padding: 18px;
+  }
+
+  .profile-footer {
+    align-items: center;
+    flex-direction: column;
+    text-align: center;
+  }
+}
+
+@media (max-width: 390px) {
+  .profile-details--academic {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .profile-heading,
+  .profile-identity,
+  .profile-card,
+  .scholarship-status {
+    animation: none;
+  }
+}

@@ -1,0 +1,272 @@
+/*ESTRUCTURA COMPARTIDA
+Dashbaord y Perfil utilizarán este mismo diseño */
+
+.app-layout {
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 230px minmax(0, 1fr);
+    color: #10283e;
+    background: #f6f8fb;
+}
+
+/*Barra lateral para computadoras.*/
+.app-sidebar {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    position: sticky;
+    top: 0;
+    padding: 26px 18px 22px;
+    border-right: 1px solid #dbe2e8;
+    background: #ffffff;
+}
+
+.app-brand {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    padding: 0 8px 26px;
+}
+
+.app-brand__icon {
+    width: 38px;
+    height: 38px;
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+    color: #ffffff;
+    border-radius: 8px;
+    background: #002b4f;
+    box-shadow: 0 7px 16px rgb(0 43 79 / 15%);
+}
+
+.app-brand__icon svg {
+    width: 22px;
+}
+
+.app-brand > div:last-child {
+    display: flex;
+    flex-direction: column;
+}
+
+.app-brand strong {
+    color: #002b4f;
+    font-size: 1rem;
+}
+
+.app-brand span {
+    margin-top: 2px;
+    color: #778593;
+    font-size: 0.62rem;
+}
+
+.app-nav {
+    display: grid;
+    gap: 6px;
+}
+
+.app-nav__link,
+.app-sidebar__logout {
+    min-height: 42px;
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    padding: 0 12px;
+    color: #526575;
+    border-radius: 7px;
+    font-size: 0.82rem;
+    text-decoration: none;
+    transition:
+        color 160ms ease,
+        background 160ms ease,
+        transform 160ms ease;
+}
+
+.app-nav__link svg,
+.app-sidebar__logout svg {
+    width: 18px;
+    height: 18px;
+}
+
+.app-nav__link:hover,
+.app-sidebar__logout:hover {
+    color: #002b4f;
+    background: #edf5fb;
+    transform: translateX(2px);
+}
+
+.app-nav__link--active {
+    color: #002b4f;
+    background: #dcecf8;
+    font-weight: 700;
+}
+
+.app-sidebar__logout {
+    margin-top: auto;
+}
+
+/*Area derecha de la aplicacion */
+.app-content {
+    min-width: 0;
+}
+
+.app-topbar {
+    height: 58px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 30px;
+    border-bottom: 1px solid #dbe2e8;
+    background: rgb(255 255 255 / 88%);
+    backdrop-filter: blur(12px);
+}
+
+.app-topbar__brand {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #002b4f;
+    font-size: 0.8rem;
+}
+
+.app-topbar__brand svg {
+    display: none;
+    width: 20px;
+}
+
+.app-topbar__section {
+    color: #6c7a88;
+    font-size: 0.75rem;
+}
+
+/*Oculto en computadora*/
+.mobile-menu {
+    display: none;
+}
+
+/*Diseño Movil*/
+@media (max-width: 760px) {
+  .app-layout {
+    display: block;
+    min-height: 100vh;
+    min-height: 100dvh;
+  }
+
+  .app-sidebar {
+    display: none;
+  }
+
+  /*
+   - Reservamos espacio para que el contenido no quede
+   - escondido detrás de la navegación fija.
+   */
+  .app-content {
+    min-height: 100vh;
+    min-height: 100dvh;
+    padding-bottom:
+      calc(70px + env(safe-area-inset-bottom));
+  }
+
+  .app-topbar {
+    height: 54px;
+    padding: 0 18px;
+  }
+
+  .app-topbar__brand svg {
+    display: block;
+  }
+
+  .mobile-menu {
+    min-height: 70px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    position: fixed;
+    z-index: 50;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    padding:
+      0 6px env(safe-area-inset-bottom);
+    border-top: 1px solid #dbe2e8;
+    background: rgb(255 255 255 / 96%);
+    box-shadow: 0 -8px 24px rgb(16 40 62 / 8%);
+    backdrop-filter: blur(14px);
+  }
+
+  /*
+   - Esta clase funciona tanto para enlaces como
+   - para el botón de cerrar sesión.
+   */
+  .mobile-menu__link {
+    min-width: 0;
+    min-height: 66px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    position: relative;
+    gap: 5px;
+    padding: 7px 4px;
+    color: #778593;
+    border: 0;
+    background: transparent;
+    font: inherit;
+    font-size: 0.68rem;
+    text-decoration: none;
+    cursor: pointer;
+    transition:
+      color 160ms ease,
+      background 160ms ease;
+  }
+
+  .mobile-menu__link svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  /*
+   - Indicador superior para la página activa.
+   */
+  .mobile-menu__link::before {
+    content: '';
+    width: 28px;
+    height: 3px;
+    position: absolute;
+    top: 0;
+    left: 50%;
+    border-radius: 0 0 999px 999px;
+    background: transparent;
+    transform: translateX(-50%);
+  }
+
+  .mobile-menu__link--active {
+    color: #002b4f;
+    background: #edf5fb;
+    font-weight: 700;
+  }
+
+  .mobile-menu__link--active::before {
+    background: #4b91c4;
+  }
+
+  /*
+   - Cerrar sesión se diferencia visualmente
+   - porque es una acción sensible.
+   */
+  .mobile-menu__logout {
+    color: #9f3641;
+  }
+
+  .mobile-menu__logout:hover,
+  .mobile-menu__logout:focus-visible {
+    color: #822833;
+    background: #fff1f2;
+  }
+
+  .mobile-menu__link:focus-visible {
+    z-index: 1;
+    outline: 3px solid rgb(75 145 196 / 28%);
+    outline-offset: -3px;
+  }
+}
+
