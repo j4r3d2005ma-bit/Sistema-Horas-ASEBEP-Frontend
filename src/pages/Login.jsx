@@ -234,7 +234,7 @@ function Login() {
               type="text"
               inputMode="numeric"
               autoComplete="username"
-              placeholder="Ej. 20240001"
+              placeholder="Ej. 2026000000"
               value={formulario.numeroCuenta}
               onChange={manejarCambio}
               aria-invalid={Boolean(
