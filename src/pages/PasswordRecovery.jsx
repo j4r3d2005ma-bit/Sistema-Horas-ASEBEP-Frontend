@@ -14,7 +14,6 @@ import {
   LockKeyhole,
   Mail,
   ShieldCheck,
-  ShieldQuestion,
 } from 'lucide-react'
 import { Link } from 'react-router'
 import '../styles/PasswordRecovery.css'
@@ -22,12 +21,6 @@ import {
   notificarError,
   notificarInformacion,
 } from '../services/notificationService.js'
-
-/*
-- Dominio institucional UNAH.
-*/
-const PATRON_CORREO_INSTITUCIONAL =
-  /^[^\s@]+@unah\.hn$/i
 
 const ID_SOLICITUD_PIN = 'solicitud-pin'
 const ID_VERIFICACION_PIN = 'verificacion-pin'
@@ -83,11 +76,7 @@ function Requisito({ cumplido, children }) {
 }
 
 function PasswordRecovery() {
-  const [correo, setCorreo] = useState('')
-  const [errorCorreo, setErrorCorreo] =
-    useState('')
   const [pin, setPin] = useState('')
-
   const [contrasena, setContrasena] =
     useState('')
   const [confirmacion, setConfirmacion] =
@@ -104,11 +93,6 @@ function PasswordRecovery() {
   - No simularemos una verificación exitosa.
   */
   const pinVerificado = false
-
-  const correoValido =
-    PATRON_CORREO_INSTITUCIONAL.test(
-      correo.trim(),
-    )
 
   const requisitos = {
     longitud: contrasena.length >= 10,
@@ -144,28 +128,15 @@ function PasswordRecovery() {
   }
 
   /*
-  - Valida el correo antes de solicitar el PIN.
-  - La llamada real se agregará cuando tenga el endpoint o la pueden agregar ustedes.
+  * Solicita el envío del PIN.
   */
   function solicitarPin(event) {
     event.preventDefault()
 
-    if (!correo.trim()) {
-      setErrorCorreo(
-        'Ingresa tu correo institucional.',
-      )
-      return
-    }
-
-    if (!correoValido) {
-      setErrorCorreo(
-        'Utiliza un correo institucional @unah.hn.',
-      )
-      return
-    }
-
-    setErrorCorreo('')
-
+    /*
+    * La llamada real será incorporada cuando el backend
+    * proporcione el endpoint para solicitar el PIN.
+    */
     notificarInformacion({
       id: ID_SOLICITUD_PIN,
       titulo: 'Solicitud preparada',
@@ -177,30 +148,21 @@ function PasswordRecovery() {
   - Comprueba únicamente que el PIN tenga seis dígitos.
   - El backend será responsable de verificar si es correcto.
   */
-function verificarPin() {
-  // Verificamos que tenga un formato valido
-  if (!correoValido) {
-    setErrorCorreo(
-      'Primero ingresa un correo institucional válido.',
-    )
+  function verificarPin() {
+    /*
+    * Si el PIN no contiene exactamente seis dígitos,
+    * mostramos el error y detenemos la función.
+    */
+    if (pin.length !== 6) {
+      notificarError({
+        id: ID_VERIFICACION_PIN,
+        titulo: 'PIN incompleto',
+        descripcion:
+          'Ingresa los seis dígitos enviados a tu correo.',
+      })
 
-    return
-  }
-
-  /*
-   * Si el PIN no contiene exactamente seis dígitos,
-   * mostramos el error y detenemos la función.
-   */
-  if (pin.length !== 6) {
-    notificarError({
-      id: ID_VERIFICACION_PIN,
-      titulo: 'PIN incompleto',
-      descripcion:
-        'Ingresa los seis dígitos enviados a tu correo.',
-    })
-
-    return
-  }
+      return
+    }
 
   /*
    * Esta parte solo se ejecuta cuando el correo
@@ -271,7 +233,7 @@ function verificarPin() {
           </span>
         </header>
 
-        {/* Primer paso: correo institucional y PIN. */}
+        {/* Primer paso: solicitud y verificacion del PIN. */}
         <section
           className="security-card"
           aria-labelledby="verification-title"
@@ -295,60 +257,25 @@ function verificarPin() {
 
           <div className="security-card__body">
             <form
-              className="institutional-email"
+              className="pin-request"
               onSubmit={solicitarPin}
-              noValidate
             >
-              <div className="security-field">
-                <label htmlFor="institutional-email">
-                  Correo institucional
-                </label>
-
-                <div className="security-input-control">
-                  <Mail aria-hidden="true" />
-
-                  <input
-                    id="correo-institucional"
-                    name="correo"
-                    type="email"
-                    autoComplete="email"
-                    placeholder="nombre@unah.hn"
-                    value={correo}
-                    onChange={(event) => {
-                      setCorreo(event.target.value)
-                      setErrorCorreo('')
-                    }}
-                    aria-invalid={Boolean(
-                      errorCorreo,
-                    )}
-                    aria-describedby={
-                      errorCorreo
-                        ? 'institutional-email-error'
-                        : undefined
-                    }
-                  />
-                </div>
-
-                {errorCorreo && (
-                  <small
-                    id="institutional-email-error"
-                    className="security-error"
-                    role="alert"
-                  >
-                    {errorCorreo}
-                  </small>
-                )}
-              </div>
-
+              {/*
+              * Se envia directamente el PIN al correo del estudiante.
+              */}
               <button
-                className="security-button security-button--secondary"
+                className={
+                  'security-button ' +
+                  'security-button--secondary ' +
+                  'security-button--request'
+                }
                 type="submit"
               >
                 <Mail aria-hidden="true" />
+
                 Enviar PIN
               </button>
             </form>
-
             <div
               className="security-divider"
               aria-hidden="true"
@@ -637,25 +564,6 @@ function verificarPin() {
             </aside>
           </form>
         </section>
-
-        {/* Información de soporte. */}
-        <aside className="security-help">
-          <div className="security-help__icon">
-            <ShieldQuestion aria-hidden="true" />
-          </div>
-
-          <div>
-            <h2>¿Necesitas ayuda adicional?</h2>
-
-            <p>
-              Si tienes problemas para recibir el PIN,
-              contacta al equipo de ASEBEP en{' '}
-              <a href="mailto:consultasasebep@gmail.com">
-                consultasasebep@gmail.com
-              </a>
-            </p>
-          </div>
-        </aside>
       </main>
     </div>
   )

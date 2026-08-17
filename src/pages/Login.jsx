@@ -450,25 +450,15 @@ function Login() {
 
         <nav
           className="access-links"
-          aria-label="Opciones de acceso"
+          aria-label="Recuperación de acceso"
         >
           <Link to="/recuperar-contrasena">
             ¿Olvidaste tus datos?
           </Link>
-
-          <a href="#configurar-cuenta">
-            Configura tu cuenta
-          </a>
         </nav>
 
         <footer className="login-footer">
           <p>© 2026 ASEBEP · Portal de Becas</p>
-
-          <div>
-            <a href="#privacidad">Privacidad</a>
-
-            <a href="#terminos">Términos</a>
-          </div>
         </footer>
       </section>
     </main>

@@ -371,20 +371,18 @@ ENLACES Y PIE DE PÁGINA
 
 .access-links {
   display: flex;
-  justify-content: space-between;
-  gap: 16px;
+  justify-content: center;
   padding: 22px 7px 30px;
+  text-align: center;
 }
 
-.access-links a,
-.login-footer a {
+.access-links a {
   color: #526575;
   font-size: 0.73rem;
   text-decoration: none;
 }
 
-.access-links a:focus-visible,
-.login-footer a:focus-visible {
+.access-links a:focus-visible {
   outline: 3px solid rgb(75 145 196 / 30%);
   outline-offset: 3px;
   border-radius: 3px;
@@ -399,15 +397,8 @@ ENLACES Y PIE DE PÁGINA
 }
 
 .login-footer p {
-  margin: 0 0 8px;
+  margin: 0;
 }
-
-.login-footer div {
-  display: flex;
-  justify-content: center;
-  gap: 14px;
-}
-
 
 @media (hover: hover) {
   .login-card:hover {
@@ -435,8 +426,7 @@ ENLACES Y PIE DE PÁGINA
     left: 145%;
   }
 
-  .access-links a:hover,
-  .login-footer a:hover {
+  .access-links a:hover {
     color: var(--login-navy);
     text-decoration: underline;
     text-underline-offset: 3px;
@@ -633,15 +623,11 @@ DISEÑO PARA CELULARES
   }
 
   .access-links {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 12px;
     padding: 18px 4px 22px;
     text-align: center;
   }
 
-  .access-links a,
-  .login-footer a {
+  .access-links a {
     font-size: 0.72rem;
     line-height: 1.4;
   }
@@ -650,10 +636,6 @@ DISEÑO PARA CELULARES
     padding-top: 18px;
     font-size: 0.72rem;
     line-height: 1.45;
-  }
-
-  .login-footer p {
-    margin-bottom: 7px;
   }
 }
 
