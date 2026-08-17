@@ -1,71 +1,117 @@
-import { useState } from 'react'
+import {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from 'react'
 
 import UsuarioContext from './UsuarioContext.js'
+import {
+  limpiarSesion,
+  obtenerNumeroCuentaSesion,
+  obtenerSesion,
+  SesionError,
+} from '../services/sesionService.js'
 import { obtenerUsuario } from '../services/usuarioService.js'
 
-/*
-- Este componente envolverá las rutas que necesitan utilizar
-- la información del usuario.
-*/
+// Proporciona la informacion del usuario autenticado
+// a todos los componentes de la aplicacion
 export function UsuarioProvider({ children }) {
   const [usuario, setUsuario] = useState(null)
-  const [cargandoUsuario, setCargandoUsuario] =
-    useState(false)
-  const [errorUsuario, setErrorUsuario] =
-    useState(null)
+  const [cargandoUsuario, setCargandoUsuario] = useState(false)
+  const [errorUsuario, setErrorUsuario] = useState(null)
 
-  /*
-  - Consulta los datos reales del usuario mediante
-  - GET /usuario/{num_cuenta}.
-  - Después guarda el resultado para compartirlo con
-  - Dashboard y Perfil.
-  */
-  async function cargarUsuario(numeroCuenta) {
+  // Esto indica que ya revisamos si existia una sesion guardada en la aplicacion
+  const [sesionComprobada, setSesionComprobada,
+  ] = useState(false)
+  // Evita ejecutar 2 veces la restauracion inicial
+  const restauracionIniciada = useRef(false)
+
+  // Consulta los datos reales del usuario autenticado.
+  const cargarUsuario = useCallback(async () => {
+    const numeroCuenta = obtenerNumeroCuentaSesion()
+
+    if (!numeroCuenta) {
+      const error = new SesionError(
+        'No existe una sesión válida para cargar al usuario.',
+      )
+
+      setUsuario(null)
+      setErrorUsuario(error)
+      setSesionComprobada(true)
+
+      throw error
+    }
+
     setCargandoUsuario(true)
     setErrorUsuario(null)
 
     try {
-      const usuarioObtenido = await obtenerUsuario(
-        numeroCuenta,
-      )
+      /*
+      * Ejecutamos: GET /usuario/{num_cuenta}
+      * apiFetch agrega automaticamente el JWT al encabezado Authorization.
+      */
+     const usuarioObtenido = await obtenerUsuario(numeroCuenta)
+     setUsuario(usuarioObtenido)
 
-      setUsuario(usuarioObtenido)
-
-      return usuarioObtenido
+     return usuarioObtenido
     } catch (error) {
       setUsuario(null)
       setErrorUsuario(error)
 
-      /*
-      - Volvemos a lanzar el error para que Login pueda
-      - mostrarlo posteriormente.
-      */
       throw error
     } finally {
       setCargandoUsuario(false)
+      setSesionComprobada(true)
     }
-  }
+  }, [])
+
+  // Al iniciar la app revisamos sessionStorage
+  useEffect(() => {
+    if (restauracionIniciada.current) {
+      return
+    }
+
+    restauracionIniciada.current = true
+
+    if (!obtenerSesion()) {
+      setSesionComprobada(true)
+      return
+    }
+
+    // El error queda almacenado en errorUsuario.
+    cargarUsuario().catch(() => undefined)
+  }, [cargarUsuario])
 
   /*
-  - Elimina de la memoria los datos del usuario.
-  - La utilizaremos cuando se cierre la sesión.
+  * Elimina toda la informacion de autenticacion
+  - JWT guardado en sessionStorage
+  - Usuario mantenido en React
+  - Errores anteriores
   */
-  function limpiarUsuario() {
-    setUsuario(null)
-    setErrorUsuario(null)
-  }
+ function limpiarUsuario() {
+  limpiarSesion()
+  setUsuario(null)
+  setErrorUsuario(null)
+  setSesionComprobada(true)
+ }
 
-  return (
-    <UsuarioContext.Provider
-      value={{
-        usuario,
-        cargandoUsuario,
-        errorUsuario,
-        cargarUsuario,
-        limpiarUsuario,
-      }}
+ // ObtenerSesion valida el JWT antes de devolverlo
+ const autenticado = Boolean(obtenerSesion())
+
+ return (
+  <UsuarioContext.Provider
+    value={{
+      usuario,
+      autenticado,
+      sesionComprobada,
+      cargandoUsuario,
+      errorUsuario,
+      cargarUsuario,
+      limpiarUsuario,
+    }}
     >
       {children}
     </UsuarioContext.Provider>
-  )
+ )
 }

@@ -3,14 +3,13 @@ import {
   LogOut,
   UserRound,
 } from 'lucide-react'
-import { NavLink, useNavigate } from 'react-router'
-import { sileo } from 'sileo'
+import { NavLink } from 'react-router'
 
-import { useUsuario } from '../hooks/useUsuario.js'
+import { useCerrarSesion } from '../hooks/useCerrarSesion.js'
 
 function MobileNavigation() {
-  const navigate = useNavigate()
-  const { limpiarUsuario } = useUsuario()
+  const { solicitarCierreSesion } =
+    useCerrarSesion()
 
   function obtenerClase({ isActive }) {
     return isActive
@@ -18,75 +17,41 @@ function MobileNavigation() {
       : 'mobile-menu__link'
   }
 
-  /*
-  - Limpia los datos guardados en el contexto.
-  - Después regresa al login e impide volver atrás
-  - utilizando el historial del navegador.
-  */
-  function cerrarSesion() {
-    sileo.clear()
-    limpiarUsuario()
-
-    /*
-    - Cuando implementemos JWT, aquí también
-    - eliminaremos el token de la sesión.
-    */
-    navigate('/login', {
-      replace: true,
-    })
-
-    sileo.success({
-      title: 'Sesión cerrada',
-      description:
-        'Has salido correctamente del portal ASEBEP.',
-    })
-  }
-
-  /*
-  - Mostramos una confirmación antes de cerrar sesión
-  */
-  function solicitarCierreSesion() {
-    sileo.action({
-      title: '¿Cerrar sesión?',
-      description:
-        'Tendrás que ingresar nuevamente para acceder al portal.',
-      duration: 7000,
-      button: {
-        title: 'Cerrar sesión',
-        onClick: cerrarSesion,
-      },
-    })
-  }
-
   return (
-
     <nav
       className="mobile-menu"
       aria-label="Navegación móvil"
     >
+      {/* Enlace hacia el panel principal. */}
       <NavLink
         className={obtenerClase}
         to="/dashboard"
       >
         <LayoutDashboard aria-hidden="true" />
+
         <span>Dashboard</span>
       </NavLink>
 
+      {/* Enlace hacia la información del usuario. */}
       <NavLink
         className={obtenerClase}
         to="/perfil"
       >
         <UserRound aria-hidden="true" />
+
         <span>Perfil</span>
       </NavLink>
 
       <button
-        className="mobile-menu__link mobile-menu__logout"
+        className={
+          'mobile-menu__link mobile-menu__logout'
+        }
         type="button"
         onClick={solicitarCierreSesion}
         aria-label="Cerrar sesión"
       >
         <LogOut aria-hidden="true" />
+
         <span>Cerrar sesión</span>
       </button>
     </nav>

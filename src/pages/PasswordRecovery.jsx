@@ -17,15 +17,21 @@ import {
   ShieldQuestion,
 } from 'lucide-react'
 import { Link } from 'react-router'
-import { sileo } from 'sileo'
-
 import '../styles/PasswordRecovery.css'
+import {
+  notificarError,
+  notificarInformacion,
+} from '../services/notificationService.js'
 
 /*
 - Dominio institucional UNAH.
 */
 const PATRON_CORREO_INSTITUCIONAL =
   /^[^\s@]+@unah\.hn$/i
+
+const ID_SOLICITUD_PIN = 'solicitud-pin'
+const ID_VERIFICACION_PIN = 'verificacion-pin'
+const ID_NUEVA_CONTRASENA = 'nueva-contrasena'
 
 /*
 - Cada slot representa visualmente un dígito.
@@ -160,10 +166,10 @@ function PasswordRecovery() {
 
     setErrorCorreo('')
 
-    sileo.info({
-      title: 'Solicitud preparada',
-      description:
-        'El envío del PIN se habilitará cuando conectemos el endpoint.',
+    notificarInformacion({
+      id: ID_SOLICITUD_PIN,
+      titulo: 'Solicitud preparada',
+      descripcion: 'EN PROCESO',
     })
   }
 
@@ -171,29 +177,41 @@ function PasswordRecovery() {
   - Comprueba únicamente que el PIN tenga seis dígitos.
   - El backend será responsable de verificar si es correcto.
   */
-  function verificarPin() {
-    if (!correoValido) {
-      setErrorCorreo(
-        'Primero ingresa un correo institucional válido.',
-      )
-      return
-    }
+function verificarPin() {
+  // Verificamos que tenga un formato valido
+  if (!correoValido) {
+    setErrorCorreo(
+      'Primero ingresa un correo institucional válido.',
+    )
 
-    if (pin.length !== 6) {
-      sileo.error({
-        title: 'PIN incompleto',
-        description:
-          'Ingresa los seis dígitos enviados a tu correo.',
-      })
-      return
-    }
-
-    sileo.info({
-      title: 'PIN preparado',
-      description:
-        'La verificación se habilitará cuando conectemos el endpoint.',
-    })
+    return
   }
+
+  /*
+   * Si el PIN no contiene exactamente seis dígitos,
+   * mostramos el error y detenemos la función.
+   */
+  if (pin.length !== 6) {
+    notificarError({
+      id: ID_VERIFICACION_PIN,
+      titulo: 'PIN incompleto',
+      descripcion:
+        'Ingresa los seis dígitos enviados a tu correo.',
+    })
+
+    return
+  }
+
+  /*
+   * Esta parte solo se ejecuta cuando el correo
+   * es válido y el PIN contiene seis dígitos.
+   */
+  notificarInformacion({
+    id: ID_VERIFICACION_PIN,
+    titulo: 'PIN preparado',
+    descripcion: 'EN PROCESO',
+  })
+}
 
   /*
   - La actualización permanecerá deshabilitada
@@ -207,10 +225,10 @@ function PasswordRecovery() {
     }
 
     if (totalCumplidos !== 5) {
-      sileo.error({
-        title: 'Revisa la contraseña',
-        description:
-          'Debes cumplir todos los requisitos de seguridad.',
+      notificarError({
+        id: ID_NUEVA_CONTRASENA,
+        titulo: 'Revisa la contraseña',
+        descripcion: 'Debes cumplir todos los requisitos de seguridad.',
       })
       return
     }

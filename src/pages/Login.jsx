@@ -1,15 +1,25 @@
 import { useState } from 'react'
-import { sileo } from 'sileo'
+import {
+  Link,
+  useNavigate,
+} from 'react-router'
+
+import { useUsuario } from '../hooks/useUsuario.js'
 import { iniciarSesion } from '../services/authService.js'
-import { Link } from 'react-router'
+import {
+  notificarError,
+  notificarExito,
+} from '../services/notificationService.js'
+import { SesionError } from '../services/sesionService.js'
 import '../styles/Login.css'
 
-// Valores que tendrá el formulario cuando se cargue la página.
 const formularioInicial = {
   numeroCuenta: '',
   contrasena: '',
 }
 
+// Identificador unico para las notificaciones del Login
+const ID_NOTIFICACION_LOGIN = 'inicio-sesion'
 
 function IconoOjo({ visible }) {
   if (visible) {
@@ -20,8 +30,11 @@ function IconoOjo({ visible }) {
         focusable="false"
       >
         <path d="M3 3l18 18" />
+
         <path d="M10.6 10.6a2 2 0 0 0 2.8 2.8" />
+
         <path d="M9.9 4.2A10.4 10.4 0 0 1 12 4c6.5 0 10 8 10 8a18 18 0 0 1-2.7 3.8" />
+
         <path d="M6.6 6.6C3.8 8.5 2 12 2 12s3.5 8 10 8c1.8 0 3.3-.4 4.6-1" />
       </svg>
     )
@@ -34,68 +47,73 @@ function IconoOjo({ visible }) {
       focusable="false"
     >
       <path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12Z" />
+
       <circle cx="12" cy="12" r="2.5" />
     </svg>
   )
 }
 
 function Login() {
-  /*
-   - useState permite que React recuerde información.
-   - formulario: guarda lo escrito en los inputs.
-   - errores: guarda los mensajes de validación.
-   - mostrarContrasena: controla si la contraseña se ve o se oculta.
-   - mensaje: muestra el resultado exitoso de la petición.
-   - enviando: indica si estamos esperando una respuesta del backend.
-   - errorServidor: guarda errores de la API o de conexión.
-   */
-  const [formulario, setFormulario] = useState(formularioInicial)
-  const [errores, setErrores] = useState({})
-  const [mostrarContrasena, setMostrarContrasena] =
-    useState(false)
-  const [enviando, setEnviando] = useState(false)
+  const navigate = useNavigate()
 
   /*
-   - Esta función se ejecuta cada vez que el usuario escribe.
-   - event.target representa el input que produjo el cambio.
+   * cargarUsuario obtiene el numero de cuenta desde
+   * la sesion y consulta la informacion del usuario.
    */
+  const { cargarUsuario } = useUsuario()
+
+  const [formulario, setFormulario] =
+    useState(formularioInicial)
+
+  const [errores, setErrores] = useState({})
+
+  const [
+    mostrarContrasena,
+    setMostrarContrasena,
+  ] = useState(false)
+
+  const [enviando, setEnviando] =
+    useState(false)
+
+  // Actualiza el campo donde esta el usuario escribiendo
   function manejarCambio(event) {
     const { name, value } = event.target
 
-    /*
-     - Copiamos los valores anteriores con ...valoresAnteriores
-     - y actualizamos únicamente el campo que cambió.
-     */
     setFormulario((valoresAnteriores) => ({
       ...valoresAnteriores,
       [name]: value,
     }))
 
-    // Limpieza de campo
+    // Si el campo tenia un error, lo eliminamos cuando el usuario lo comienza a corregir
     if (errores[name]) {
       setErrores((erroresAnteriores) => ({
         ...erroresAnteriores,
         [name]: '',
       }))
     }
-
   }
 
-  /*
-   - Comprueba los datos antes de permitir el envío.
-   - Devuelve un objeto con los errores encontrados.
-   */
+  // Valida los datos antes de enviarlos al backend
   function validarFormulario() {
     const nuevosErrores = {}
 
-    if (!formulario.numeroCuenta.trim()) {
+    /*
+     * Eliminamos espacios al inicio y al final solamente
+     * para realizar la validacion del numero de cuenta.
+     */
+    const numeroCuenta =
+      formulario.numeroCuenta.trim()
+
+    // El numero de cuenta es un id
+    if (!numeroCuenta) {
       nuevosErrores.numeroCuenta =
         'Ingresa tu número de cuenta.'
-    } else if (!/^\d+$/.test(formulario.numeroCuenta)) {
+    } else if (!/^\d+$/.test(numeroCuenta)) {
       nuevosErrores.numeroCuenta =
         'El número de cuenta solo puede contener números.'
     }
 
+    // La contraseña unicamente la validamos como obligatoria en el Login.
     if (!formulario.contrasena) {
       nuevosErrores.contrasena =
         'Ingresa tu contraseña.'
@@ -104,21 +122,92 @@ function Login() {
     return nuevosErrores
   }
 
-/*
- - Esta función se ejecuta cuando se envía el formulario.
- - Primero valida los campos y después llama a la API.
- - async permite utilizar await para esperar al backend.
-*/
+  // Le explica al usuario el error que ocurrio al intentar iniciar sesion
+  function obtenerDescripcionError(error) {
+    /*
+     * SesionError significa que el backend respondio,
+     * pero el JWT esta incompleto, vencido o no es valido.
+     */
+    if (error instanceof SesionError) {
+      return (
+        'La sesión enviada por el servidor está incompleta. ' +
+        'Verifica que el JWT contenga el número de cuenta, el rol y la expiración.'
+      )
+    }
+
+    // 401 significa que las credenciales no son validas.
+    if (error.status === 401) {
+      const mensajeServidor = String(
+        error.message || '',
+      ).toLowerCase()
+
+      /*
+       * Revisamos por separado si el backend indica
+       * que la cuenta todavia no ha sido activada.
+       */
+      if (mensajeServidor.includes('inactivo')) {
+        return (
+          'Tu cuenta todavía no está activa. ' +
+          'Configúrala antes de iniciar sesión.'
+        )
+      }
+
+      return (
+        'El número de cuenta o la contraseña son incorrectos. ' +
+        'Por favor verifica tus datos e intenta de nuevo.'
+      )
+    }
+
+    /*
+     * 422 significa que los datos enviados no coinciden
+     * con la estructura que espera actualmente el backend.
+     */
+    if (error.status === 422) {
+      return (
+        'El servidor todavía no puede procesar estas credenciales. ' +
+        'Verifica que el backend acepte número de cuenta y contraseña.'
+      )
+    }
+
+    // ApiError utiliza 0 cuando no existe una respuesta HTTP valida.
+    if (error.status === 0 || !error.status) {
+      return (
+        'No fue posible conectarse con el servidor. ' +
+        'Verifica tu conexión a internet e intenta de nuevo.'
+      )
+    }
+
+    // Para respuestas 400, 404 o 500 apiFetch prepara un mensaje basado en la respuesta enviada por el backend.
+    return (
+      error.message ||
+      'No fue posible completar la operación.'
+    )
+  }
+
+  /*
+   * Procesa el envio del formulario. El flujo de operacion es el siguiente:
+   * 1. Evitar recargar el navegador en cada ocasion
+   * 2. Validar los campos
+   * 3. Bloquear envios duplicados o el spam de peticiones
+   * 4. Consultar el endpoint de autenticacion
+   * 5. Guardar y validar el JWT recibido
+   * 6. Consultar la informacion del usuario autenticado
+   * 7. Informar el resultado mediante Sonner
+   * 8. Navegar hacia el Dashboard
+   */
   async function manejarEnvio(event) {
-    // Evita que el navegador recargue la página.
     event.preventDefault()
+
+    /*
+     * Aunque el boton este desactivado, agregamos esta
+     * comprobacion para impedir solicitudes duplicadas.
+     */
+    if (enviando) {
+      return
+    }
 
     const nuevosErrores = validarFormulario()
 
-    /*
-    - Object.keys obtiene los nombres de las propiedades.
-    - Si hay errores, detenemos el envío del formulario.
-    */
     if (Object.keys(nuevosErrores).length > 0) {
       setErrores(nuevosErrores)
       return
@@ -126,58 +215,61 @@ function Login() {
 
     setErrores({})
 
-    /*
-    - Cambiamos enviando a true mientras esperamos.
-    - Esto desactiva el botón y evita peticiones duplicadas.
-    */
+    // Desactivamos el boton temporalmente para evitar spam
     setEnviando(true)
 
     try {
       /*
-      - iniciarSesion pertenece a authService.js.
-      - authService utiliza apiFetch para comunicarse
-      - con el endpoint /auth/login.
-      */
+       * iniciarSesion envia num_cuenta y password.
+       * Si la respuesta es correcta, guarda el JWT.
+       */
       await iniciarSesion({
-        numeroCuenta: formulario.numeroCuenta,
-        contrasena: formulario.contrasena,
+        numeroCuenta:
+          formulario.numeroCuenta,
+        contrasena:
+          formulario.contrasena,
       })
 
       /*
-      - La respuesta eventualmente tendrá el JWT.
-      - Por seguridad, no la mostramos en la consola.
-      */
-      sileo.success({
-        title: 'Inicio de sesión correcto',
-        description: 'Bienvenido al portal de becas ASEBEP.',
+       * cargarUsuario obtiene num_cuenta desde el JWT
+       * y consulta GET /usuario/{num_cuenta}.
+       */
+      await cargarUsuario()
+
+      /*
+       * Limpiamos las credenciales almacenadas en React
+       * antes de abandonar la pagina del Login.
+       */
+      setFormulario(formularioInicial)
+
+      // Mostramos una notificacion de exito
+      notificarExito({
+        id: ID_NOTIFICACION_LOGIN,
+        titulo: 'Inicio de sesión correcto',
+        descripcion:
+          'Bienvenido al portal de becas ASEBEP.',
+      })
+
+      /*
+       * replace evita que el usuario regrese al Login
+       * utilizando el boton atras del navegador.
+       */
+      navigate('/dashboard', {
+        replace: true,
       })
     } catch (error) {
-      let descripcionError = ''
+      const descripcionError =
+        obtenerDescripcionError(error)
 
-      // Codigo 401
-      if (error.status === 401) {
-        descripcionError =
-          'El número de cuenta o la contraseña son incorrectos.'
-      } else if (!error.status) {
-        descripcionError =
-          'No fue posible conectarse con el servidor.'
-      } else {
-        /*
-        - apiFetch prepara un mensaje para respuestas
-        - como 400, 404, 422 o 500.
-        */
-        descripcionError =
-          error.message ||
-          'No fue posible completar la solicitud.'
-      }
-
-      sileo.error({
-        title: 'No fue posible iniciar sesión',
-        description: descripcionError,
-        duration: 6000,
+      // Mostramos el error con el identificador
+      notificarError({
+        id: ID_NOTIFICACION_LOGIN,
+        titulo:
+          'No fue posible iniciar sesión',
+        descripcion: descripcionError,
       })
     } finally {
-
+      // finally se ejecuta tanto si la peticion termina correctamente o con error
       setEnviando(false)
     }
   }
@@ -188,7 +280,7 @@ function Login() {
         className="login-content"
         aria-labelledby="login-title"
       >
-        {/* Identidad visual de ASEBEP */}
+        {/* Identidad visual principal de ASEBEP. */}
         <header className="brand">
           <div
             className="brand__icon"
@@ -196,18 +288,24 @@ function Login() {
           >
             <svg viewBox="0 0 24 24">
               <path d="M3 9.25 12 5l9 4.25L12 13.5 3 9.25Z" />
+
               <path d="M7 11.1v5.1c2.9 2 7.1 2 10 0v-5.1" />
+
               <path d="M21 9.25v5" />
             </svg>
           </div>
 
           <div>
             <h1 id="login-title">ASEBEP</h1>
+
             <p>Portal de Gestión de Becas</p>
           </div>
         </header>
 
-        {/* Este mensaje aparece solamente en dispositivos pequeños. */}
+        {/*
+         * Esta introducción se muestra únicamente
+         * en dispositivos pequeños.
+         */}
         <div className="login-intro">
           <h2>Bienvenido</h2>
 
@@ -217,7 +315,10 @@ function Login() {
           </p>
         </div>
 
-        {/* onSubmit conecta el formulario con manejarEnvio */}
+        {/*
+         * onSubmit conecta el formulario con la función
+         * que valida y envía las credenciales.
+         */}
         <form
           className="login-card"
           onSubmit={manejarEnvio}
@@ -325,9 +426,11 @@ function Login() {
           </div>
 
           {/*
-            - disabled impide enviar varias peticiones.
-            - aria-busy informa que el botón está procesando.
-          */}
+           * disabled evita solicitudes duplicadas.
+           *
+           * aria-busy comunica a las tecnologías
+           * de asistencia que la acción está en proceso.
+           */}
           <button
             className="login-button"
             type="submit"
@@ -363,6 +466,7 @@ function Login() {
 
           <div>
             <a href="#privacidad">Privacidad</a>
+
             <a href="#terminos">Términos</a>
           </div>
         </footer>

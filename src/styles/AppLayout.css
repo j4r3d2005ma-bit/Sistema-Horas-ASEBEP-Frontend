@@ -102,7 +102,19 @@ Dashbaord y Perfil utilizarán este mismo diseño */
 }
 
 .app-sidebar__logout {
-    margin-top: auto;
+  width: 100%;
+  margin-top: auto;
+  border: 0;
+  appearance: none;
+  background: transparent;
+  font-family: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.app-sidebar__logout:focus-visible {
+  outline: 3px solid rgb(75 145 196/ 28%);
+  outline-offset: 2px;
 }
 
 /*Area derecha de la aplicacion */
