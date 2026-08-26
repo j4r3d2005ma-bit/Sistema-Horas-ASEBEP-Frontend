@@ -139,8 +139,8 @@ function PasswordRecovery() {
     */
     notificarInformacion({
       id: ID_SOLICITUD_PIN,
-      titulo: 'Solicitud preparada',
-      descripcion: 'EN PROCESO',
+      titulo: 'Funcionalidad pendiente',
+      descripcion: 'El envío del PIN estará disponible proximamente.',
     })
   }
 
@@ -170,8 +170,8 @@ function PasswordRecovery() {
    */
   notificarInformacion({
     id: ID_VERIFICACION_PIN,
-    titulo: 'PIN preparado',
-    descripcion: 'EN PROCESO',
+    titulo: 'Funcionalidad pendiente',
+    descripcion: 'La verificación del PIN estara disponible proximamente.',
   })
 }
 
