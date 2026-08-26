@@ -8,7 +8,7 @@ import { Navigate, Route, Routes } from 'react-router'
 import { Toaster as SonnerToaster } from 'sonner'
 
 import ProtectedRoute from './components/ProtectedRoute.jsx'
-import { UsuarioProvider } from './context/UsuarioProvider.jsx'
+import Home from './pages/Home.jsx'
 import Dashboard from './pages/Dashboard.jsx'
 import Login from './pages/Login.jsx'
 import PasswordRecovery from './pages/PasswordRecovery.jsx'
@@ -94,19 +94,16 @@ function App() {
         }}
         />
 
-    <UsuarioProvider>
       {/* Routes examina la direccion actual y con eso determinamos que pagina renderizar */}
       <Routes>
-        <Route path="/" element={<Navigate to="/login" replace />} />
+        <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/recuperar-contrasena" element={<PasswordRecovery />} />
-
-        <Route path="/dashboard" element={<ProtectedRoute><Dashboard /> </ProtectedRoute>} />
-        <Route path="/perfil" element={<ProtectedRoute><Profile /> </ProtectedRoute>} />
-        {/* Cualquier direccion desconocida retorna al login*/}
-        <Route path="*" element={<Navigate to="/login" replace />} />
+        <Route path="/dashboard" element={<ProtectedRoute rolesPermitidos={['becario']}> <Dashboard /></ProtectedRoute>} />
+        <Route path="/perfil" element={<ProtectedRoute rolesPermitidos={['becario']}><Profile /> </ProtectedRoute>} />
+        {/* Cualquier direccion desconocida retorna al inicio*/}
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
-    </UsuarioProvider>
     </>
   )
 }

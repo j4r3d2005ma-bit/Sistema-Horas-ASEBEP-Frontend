@@ -60,7 +60,13 @@ function Login() {
    * cargarUsuario obtiene el numero de cuenta desde
    * la sesion y consulta la informacion del usuario.
    */
-  const { cargarUsuario } = useUsuario()
+
+  const {
+  cargarUsuario,
+  limpiarUsuario,
+  modoSimulado,
+  iniciarSesionPrueba,
+} = useUsuario()
 
   const [formulario, setFormulario] =
     useState(formularioInicial)
@@ -170,7 +176,7 @@ function Login() {
     }
 
     // ApiError utiliza 0 cuando no existe una respuesta HTTP valida.
-    if (error.status === 0 || !error.status) {
+    if (error.status === 0) {
       return (
         'No fue posible conectarse con el servidor. ' +
         'Verifica tu conexión a internet e intenta de nuevo.'
@@ -217,12 +223,28 @@ function Login() {
 
     // Desactivamos el boton temporalmente para evitar spam
     setEnviando(true)
+    let sesionCreada = false
 
     try {
+
+      if (modoSimulado) {
       /*
-       * iniciarSesion envia num_cuenta y password.
-       * Si la respuesta es correcta, guarda el JWT.
-       */
+      * En modo beta validamos las credenciales
+      * ficticias sin consultar el backend.
+      */
+      await iniciarSesionPrueba({
+        numeroCuenta:
+          formulario.numeroCuenta,
+        contrasena:
+          formulario.contrasena,
+      })
+
+      sesionCreada = true
+    } else {
+      /*
+      * En modo real obtenemos el JWT y después
+      * consultamos la información del usuario.
+      */
       await iniciarSesion({
         numeroCuenta:
           formulario.numeroCuenta,
@@ -230,17 +252,15 @@ function Login() {
           formulario.contrasena,
       })
 
-      /*
-       * cargarUsuario obtiene num_cuenta desde el JWT
-       * y consulta GET /usuario/{num_cuenta}.
-       */
-      await cargarUsuario()
+      sesionCreada = true
 
-      /*
-       * Limpiamos las credenciales almacenadas en React
-       * antes de abandonar la pagina del Login.
-       */
-      setFormulario(formularioInicial)
+      await cargarUsuario()
+    }
+    /*
+    * Limpiamos las credenciales almacenadas en React
+    * antes de abandonar la pagina del Login.
+    */
+    setFormulario(formularioInicial)
 
       // Mostramos una notificacion de exito
       notificarExito({
@@ -258,14 +278,34 @@ function Login() {
         replace: true,
       })
     } catch (error) {
+      /*
+      * Si el JWT fue guardado pero no pudimos cargar
+      * al usuario, deshacemos completamente el login
+      */
+
+      if (sesionCreada) {
+        limpiarUsuario()
+      }
+
       const descripcionError =
         obtenerDescripcionError(error)
+
+      const mensajeError = String(
+        error.message || '',
+      ).toLowerCase()
+
+      const tituloError = error instanceof SesionError
+        ? 'Sesión inválida'
+        : error.status === 401
+          ? mensajeError.includes('inactivo')
+            ? 'Cuenta inactiva'
+            : 'Credenciales incorrectas'
+          : 'No fue posible iniciar sesión'
 
       // Mostramos el error con el identificador
       notificarError({
         id: ID_NOTIFICACION_LOGIN,
-        titulo:
-          'No fue posible iniciar sesión',
+        titulo: tituloError,
         descripcion: descripcionError,
       })
     } finally {
