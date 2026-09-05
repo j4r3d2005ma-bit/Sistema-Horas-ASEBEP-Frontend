@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { ArrowRight, Bell, CalendarDays, Check, Clock3,
     Menu, GraduationCap, X,
 } from 'lucide-react'
-import { Link, NavLink } from 'react-router'
+import { Link, NavLink, useNavigate } from 'react-router'
 import logoAsebep from '../assets/asebep-logo.png'
 import '../styles/Home.css'
 
@@ -47,7 +47,7 @@ const beneficios = [
 
 function Home() {
     const [menuAbierto, setMenuAbierto] = useState(false)
-
+    const navigate = useNavigate()
     // Cierra la navegacion movil despues de seleccionar un enelace
     function cerrarMenu() {
         setMenuAbierto(false)
@@ -209,6 +209,23 @@ function Home() {
                                     <p className="student-home__logo-message">
                                         Información clara para avanzar con tu beca.
                                     </p>
+                                    <div style={{ marginTop: '1rem', textAlign: 'center' }}>
+                                    <button
+                                        onClick={() => navigate('/beneficios')}
+                                        style={{
+                                            backgroundColor: '#2563eb',
+                                            color: '#ffffff',
+                                            padding: '0.5rem 1.25rem',
+                                            borderRadius: '0.5rem',
+                                            border: 'none',
+                                            fontWeight: '600',
+                                            fontSize: '0.85rem',
+                                            cursor: 'pointer'
+                                        }}
+                                    >
+                                        Ver Beneficios
+                                    </button>
+                                    </div>
                                 </div>  
                             </div>
                     </section>

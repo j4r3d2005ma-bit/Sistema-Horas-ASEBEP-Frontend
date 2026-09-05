@@ -1,0 +1,85 @@
+.navbar-header {
+    width: 100%;
+    background-color: #ffffff;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    font-family: system-ui, -apple-system, sans-serif;
+}
+
+.navbar-container {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 1rem;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.navbar-brand {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+    text-decoration: none;
+}
+
+.navbar-logo {
+    width: 48px;
+    height: 48px;
+    object-fit: contain;
+    border-radius: 50%;
+}
+
+.navbar-brand-title {
+    font-size: 1.35rem;
+    font-weight: 800;
+    color: #0f172a;
+    display: block;
+    line-height: 1.1;
+    letter-spacing: -0.01em;
+}
+
+.navbar-brand-subtitle {
+    font-size: 0.75rem;
+    color: #64748b;
+    display: block;
+    font-weight: 500;
+}
+
+.navbar-nav {
+    display: flex;
+    align-items: center;
+    gap: 1.75rem;
+    height: 100%;
+    font-size: 0.9rem;
+}
+
+.navbar-link {
+    text-decoration: none;
+    color: #0f172a;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    padding: 0 0.5rem;
+    box-sizing: border-box;
+    transition: color 0.2s ease;
+}
+
+.navbar-login-btn {
+    background-color: #00284d;
+    color: #ffffff;
+    font-weight: 700;
+    padding: 0.85rem 1.8rem;
+    border-radius: 0.5rem;
+    text-decoration: none;
+    font-size: 0.95rem;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+    display: inline-block;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.navbar-login-btn:hover {
+    background-color: #003b6f;
+}

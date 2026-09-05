@@ -7,6 +7,11 @@ import {
 import { Navigate, Route, Routes } from 'react-router'
 import { Toaster as SonnerToaster } from 'sonner'
 
+import GuiaPostulacion from './pages/GuiaPostulacion';
+import Beneficios from './pages/Beneficios.jsx'
+import ComoFunciona from './pages/ComoFunciona.jsx'
+import PreguntasFrecuentes from './pages/PreguntasFrecuentes.jsx'
+
 import ProtectedRoute from './components/ProtectedRoute.jsx'
 import Home from './pages/Home.jsx'
 import Dashboard from './pages/Dashboard.jsx'
@@ -103,6 +108,10 @@ function App() {
         <Route path="/perfil" element={<ProtectedRoute rolesPermitidos={['becario']}><Profile /> </ProtectedRoute>} />
         {/* Cualquier direccion desconocida retorna al inicio*/}
         <Route path="*" element={<Navigate to="/" replace />} />
+        <Route path="/guia-postulacion" element={<GuiaPostulacion />} />
+        <Route path="/beneficios" element={<Beneficios />} />
+        <Route path="/como-funciona" element={<ComoFunciona />} />
+        <Route path="/preguntas-frecuentes" element={<PreguntasFrecuentes />} />
       </Routes>
     </>
   )
